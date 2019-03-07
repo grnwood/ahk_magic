@@ -83,4 +83,8 @@ SetTimer, Send_LWinUP, off
 Send, {LWinUP}
 return
 
+;Change zim task to bullets
+^F12::
+Send, {Home}{Home}{Shift down}{End}{Shift up}!mt
+return
 

@@ -29,10 +29,14 @@ F10::SendInput {Volume_Mute}
 F11::SendInput {Volume_Down}
 F12::SendInput {Volume_Up}
 
-; remap task viewer to shift-control-tab (when not in 
+; remap task viewer to shift-control-tab (when not in chrome or FF)
 #IfWinNotActive, ahk_class Chrome_WidgetWin_1
-	+^Tab::Send, #{Tab}
+	#IfWinNotActive, ahk_class MozillaWindowClass
+		+^Tab::Send, #{Tab}
+	#IfWinNotActive
 #IfWinNotActive
+
+
 
 ; swap left command/windows key with left alt
 ;LWin::LAlt

@@ -6,9 +6,32 @@ SetTitleMatchMode 3
 zim := "Notes2 - Zim"
 zimtasks := "Task List"
 
+;;; task switcher
+!BackSpace::
+	;MsgBox, "alt backspace hit"
+	Send, {LWin Down}{Tab}{LWin Up}
+return
+
+; Hot key desktop switch
+<^<!Left::
+	;MsgBox 'ctrl alt left'
+	Send, {LWin down}{LCtrl down}{Left down}
+	Send, {LWin up}{LCtrl up}{Left up}
+return
+<^<!Right::
+	;MsgBog 'ctrl alt left'
+	Send, {LWin down}{LCtrl down}{Right down}			
+	Send, {LWin up}{LCtrl up}{Right up}	
+return
+<^<!Down::	
+	;MsgBox 'ctrl alt left'
+	Send, {LWin down}{tab down}
+	Send, {LWin up}{tab up} 
+return
+
 !x::WinMinimize,A ;
 !z::WinClose,A ;
-!SPACE::WinSet, AlwaysOnTop, Toggle, A
+;!SPACE::WinSet, AlwaysOnTop, Toggle, A
 
 ;skype on ctrl-1
 ^1::
@@ -230,4 +253,5 @@ return
 ControlGetFocus, control, A
 SendMessage, 0x114, 1, 0, %control%, A ; 0x114 is WM_HSCROLL
 return
+
 

@@ -82,13 +82,13 @@ resetInputNumber()
 
 ;;; The following allows appending numbers before a command, 
 ;;; e.g. 2, 4, w == 24w which can then be used throughout the rest of the commands.
-;;; The number is usually reset to 0 by a move/modify command or ESC.
+;;; The number is usually reset to 0 by a move/modify command or jk.
 
-Esc::
-{
-   ;unvimize()
-   return
-}
+;Esc::
+;{
+;   unvimize()
+;   return
+;}
 
 ; On enter task switcher.
 

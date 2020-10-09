@@ -25,14 +25,14 @@ shifton := false
 notifyvim(time=300)
 {
    ; Progress, y280 b2 fs10 zh0 WS800, %text%, , , Verdana
-   Progress, cwMaroon ctFFFFFF y80 b2 fs10 zh0 W150 WS700, nav, , , Verdana 
+   Progress, cwMaroon ctFFFFFF y10 b2 fs10 zh0 W100 WS700, nav, , , Verdana 
    ;Progress, Off
    return
 }
 notifyinsert(time=300)
 {
-   ; Progress, y280 b2 fs10 zh0 WS800, %text%, , , Verdana
-   Progress, cwBlue ctFFFFFF y80 b2 fs10 zh0 W150 WS700, edit, , , Verdana 
+   ; Progress, y120 b2 fs10 zh0 WS800, %text%, , , Verdana
+   Progress, cwGreen ctFFFFFF y10 b2 fs10 zh0 W100 WS700, edit, , , Verdana 
    Sleep, %time%
    Progress, Off
    return
@@ -86,9 +86,11 @@ resetInputNumber()
 
 Esc::
 {
-   unvimize()
+   ;unvimize()
    return
 }
+
+; On enter task switcher.
 
 0::
 {
@@ -160,7 +162,7 @@ d::
 ;;; Delete a whole line on shift-d
 +d::
 {
-	Send, {Home}{Shift Down}{End}{Shift Up}{Del}{Del}{Home}{Home}
+   Send, {Home}{Shift Down}{End}{Shift Up}{Del}{Del}{Home}{Home}
 }
 return
 
@@ -222,9 +224,11 @@ return
 Send !{Right}
 return
 
-
+;So, 'a' goes to home of line, ';' goes to end of line
+;And Shift-; selects the whole line!
 a::Send, {Home}
-e::Send, {End}
+`;::Send, {End}
+<+;::Send, {Shift Down}{End}{Shift up}
 w::
 {
    Send, ^{Right %inputNumber%}
@@ -306,10 +310,15 @@ return
 u::Send, ^z     ;; Undo
 y::Send, ^y    ;; Redo
 
+;;; Alt enter is like ctrl alt tab.. .keep home keys when task switching
+!Enter::
+   Send, ^!{Tab}
+return
+
 ;;; Conviennce task bar focus on 't'
-;t::
-;   Send, {LWin Down}t{LWin Up}
-;return
+t::
+   Send, {LWin Down}t{LWin Up}
+return
 
 ;Move mouse with VIM keys and shft/ctrl 100 pixels
    ;Move mouse more granular with u/i/o/p also
@@ -317,7 +326,7 @@ y::Send, ^y    ;; Redo
 <+^j::
 {
    ;msgbox "okay"
-	MouseMove, 0, 100, , R     
+   MouseMove, 0, 100, , R     
    return
 }
 

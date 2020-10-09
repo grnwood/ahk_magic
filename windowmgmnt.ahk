@@ -1,10 +1,21 @@
-﻿;Env  ; Recommended for performance and compatibility with future AutoHotkey releases.
+;Env  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 SetTitleMatchMode 3
 
 zim := "Notes2 - Zim"
 zimtasks := "Task List"
+
+;;; switch desktops
+![::
+	Send, {LWin down}{LCtrl down}{Left down}
+	Send, {LWin up}{LCtrl up}{Left up}
+return
+
+!]::
+	Send, {LWin down}{LCtrl down}{Right down}
+	Send, {LWin up}{LCtrl up}{Right up}
+return
 
 ;;; task switcher
 !BackSpace::
@@ -83,7 +94,7 @@ IfWinExist, %zim%
 
 		}
 } else {
-			
+
 	Run python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki\zim.py
 	;Run python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki-grnwood\zim.py
 

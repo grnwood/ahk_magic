@@ -270,8 +270,9 @@ b::
 }
 
 
+;;; let's try leaving ctrl-f on slash... might still be usefull.
 ;;; Searching (not needed, ctrl-f is easy enough and search is diff in each app anyway)
-;/::Send, ^f     ;; Search
+/::Send, ^f     ;; Search
 ;n::Send {F3}    ;; Search next
 ;+n::Send +{F3}  ;; Search previous
 ;^/::Send, ^h    ;; Replace
@@ -310,13 +311,31 @@ return
 u::Send, ^z     ;; Undo
 y::Send, ^y    ;; Redo
 
-;;; Alt enter is like ctrl alt tab.. .keep home keys when task switching
+; Hot key desktop switch ctrrl-alt-j left workspace, k right workspace.
+<^<!j::
+	;MsgBox 'ctrl alt left'
+	Send, {LWin down}{LCtrl down}{Left down}
+	Send, {LWin up}{LCtrl up}{Left up}
+return
+<^<!k::
+	;MsgBog 'ctrl alt left'
+	Send, {LWin down}{LCtrl down}{Right down}			
+	Send, {LWin up}{LCtrl up}{Right up}	
+return
+
+;;; alt enter is like ctrl alt tab.. .keep home keys when task switching
 !Enter::
    Send, ^!{Tab}
 return
 
-;;; Conviennce task bar focus on 't'
-t::
+;;; ctrl-alt-enter is like windows-tab  .keep home keys when task switching
+^!Enter::
+   Send, {LWin Down}{Tab}{LWin Up}
+return
+
+
+;;; Conviennce task bar focus on 't'			
+!t::
    Send, {LWin Down}t{LWin Up}
 return
 

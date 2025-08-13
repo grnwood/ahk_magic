@@ -21,6 +21,28 @@ inputNumber := " "
 modal := false
 shifton := false
 
+
+; kinesys freestyle, need a insert on ctrl/shift/i
+^+i::
+   Send, {Insert}
+return
+
+; Zim tasks label swapping
+^+2::
+msgbox %clipboard%
+StringReplace,clipboard,clipboard,@todo,@wait,All
+return
+
+;this is a @todo asdfsdf 
+;this is a @todo asdfasdfsadf
+
+^+1::
+msgbox replace
+StringReplace,clipboard,clipboard,"@wait","@todo",All
+return
+
+;this other @wait
+
 ;;; GUI
 notifyvim(time=300)
 {
@@ -90,7 +112,8 @@ resetInputNumber()
 ;   return
 ;}
 
-; On enter task switcher.
+; On enter task switcher. @todo
+
 
 0::
 {
@@ -417,5 +440,4 @@ return
 ;
 
 #If
-
 

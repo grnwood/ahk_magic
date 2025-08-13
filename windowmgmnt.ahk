@@ -1,10 +1,24 @@
 ;Env  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-SetTitleMatchMode 3
+SetTitleMatchMode 2
 
-zim := "Notes2 - Zim"
-zimtasks := "Task List"
+zim := "- WorkNotes2022"
+mobilepass := "MobilePASS"
+;zim := "WorkNotesObs - Obsidian"
+zim_personal := "BujoObs"
+zimtasks := "Tasks  -"
+todoist := "Todoist"
+mailapp := "Outlook (PWA)"
+mailappfat := "ahk_exe OUTLOOK.EXE"
+
+;lets automate my mobilepass python script
+!q::
+if WinExist(%mobilepass%) {
+	WinKill %mobilepass%
+}
+RunWait, pythonw.exe c:/Users/jogreenw/code/python/mobilepass/pingid.py, c:/Users/jogreenw/code/python/mobilepass/
+return
 
 ;;; switch desktops
 ![::
@@ -95,8 +109,37 @@ IfWinExist, %zim%
 		}
 } else {
 
-	Run python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki\zim.py
-	;Run python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki-grnwood\zim.py
+	Run C:\Users\jogreenw\zim\zim.exe 
+	;Run c:\msys64\mingw64\bin\python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki\zim.py
+
+	DetectHiddenWindows, off
+	return
+}
+return
+
+;personal zim on control-escape (override windows)
+$^escape::
+DetectHiddenWindows, on
+IfWinExist, %zim_personal%
+{
+;MsgBox, 'wdw  %wdw%'
+	IfWinActive, %zim_personal%
+		{
+			WinMinimize, %zim_personal%
+			;WinActivate ahk_class Shell_TrayWnd
+		}
+	else
+		{
+			WinShow, %zim_personal%
+			WinActivate, %zim_personal%
+			IfWinExist, %zim_personal%
+			    WinActivate ; use the window found above
+
+		}
+} else {
+
+	Run C:\Users\jogreenw\zim\zim.exe 
+	;Run c:\mingw64\bin\python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki-grnwood\zim.py
 
 	DetectHiddenWindows, off
 	return
@@ -113,9 +156,9 @@ mode := "fat-client-notused"
 if (mode = "fat-client") {
   wdw := WinExist("ahk_exe OUTLOOK.EXE")
 } else {
-	wdw := WinExist("Mail - Greenwood, Joe - Outlook")
+	wdw := WinExist(mailapp)
 	if (!wdw) {
-	  wdw := WinExist("Cap Email")
+	  wdw := WinExist(mailappfat)
 	}
 }
 if (wdw) {
@@ -130,9 +173,9 @@ if (wdw) {
 }
 return
 
-;fire up chrome app versions of outlook calendar on Alt-2
+;fire up teams on Alt-2
 !2::
-wdw := WinExist("Calendar - Greenwood, Joe - Outlook")
+wdw := WinExist("ahk_exe Teams.exe")
 if (wdw) {
   if WinActive(%wdw%) 
      WinMinimize ;
@@ -146,7 +189,7 @@ if (wdw) {
 }
 return
 
-;fire up chrome app versions of outlook calendar on Alt-2
+;fire up keepbass
 !c::
 wdw := WinExist("ahk_exe KeePass.exe")
 if (wdw) {
@@ -158,7 +201,6 @@ if (wdw) {
    Suspend, On
    Send, !c
    Suspend, Off
-   
 }
 return
 
@@ -206,9 +248,27 @@ else
  WinActivate, %zimtasks%
 return
 
+;todoist window on ctrl-\
+^\::
+IfWinActive %todoist%
+  WinMinimize, %todoist%
+else
+  WinActivate, %todoist%
+return
+
 ;Change zim task to bullets
 ^F12::
 Send, {Home}{Home}{Shift down}{End}{Shift up}!mt
+Send, {End}
+return
+
+;ctrl-alt-l: gimme copy url to this location in zim (cannot do it in zim hotkeys)
+^!l::
+Send, {Right}
+Click, right, %A_CaretX%, %A_CaretY%
+Sleep, 100
+;Send, {Down}{Down}{Enter}
+;Send, {Left}
 return
 
 ;zim up and down keys
@@ -264,5 +324,4 @@ return
 ControlGetFocus, control, A
 SendMessage, 0x114, 1, 0, %control%, A ; 0x114 is WM_HSCROLL
 return
-
 

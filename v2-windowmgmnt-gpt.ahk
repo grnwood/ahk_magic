@@ -5,7 +5,7 @@ SendMode("Input")  ; Recommended for new scripts due to its superior speed and r
 SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
 SetTitleMatchMode(2)
 
-zim := "- WorkNotes2022"
+zim := "- WorkNotes2025"
 mobilepass := "MobilePASS"
 ;zim := "WorkNotesObs - Obsidian"
 zim_personal := "BujoObs"
@@ -23,6 +23,17 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
     RunWait("pythonw.exe c:/Users/jogreenw/code/python/mobilepass/pingid.py", "c:/Users/jogreenw/code/python/mobilepass/")
 	return
 }	
+
+^!Down:: {
+    Send("{LAlt down}{Tab}")
+    ;Send("{LAlt up}")
+}
+
+;;; ctrl-alt-up is like expose windows-tab
+^!Up:: {
+    Send("{LWin Down}{Tab}{LWin Up}")
+    return
+}
 
 ; switch desktops
 ![::
@@ -73,6 +84,31 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
 
 ;!SPACE::WinSet("AlwaysOnTop", "Toggle", "A")
 
+; Alt navs in vim mode
+<!h::  ; Alt + H
+{
+    Send("!{Left}")  ; Sends Alt + Left Arrow
+    return
+}
+
+<!l::  ; Alt +L
+{
+    Send("!{Right}")  ; Sends Alt + Right Arrow
+    return
+}
+
+<!k::  ; Alt +L
+{
+    Send("!{Up}")  ; Sends Alt + Up Arrow
+    return
+}
+
+<!j::  ; Alt +j
+{
+    Send("!{Down}")  ; Sends Alt + Up Arrow
+    return
+}
+
 ; zim on control-`
 ^`::
 {
@@ -86,7 +122,7 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
             WinActivate(zim)
         }
     } else {
-        Run("C:\Users\jogreenw\zim\zim.exe")
+        Run("C:\Users\jogreenw\programs\zim\zim.exe")
         ;Run("c:\msys64\mingw64\bin\python3w-msys.exe C:\Users\jogreenw\code\zim-desktop-wiki\zim.py")
         DetectHiddenWindows(false)
     }return
@@ -117,45 +153,46 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
 }
 
 ; fire up teams on Alt-2
+; Try to target the 'Chat' window first, otherwise fail to anything teams exe.
 !2::
 {
-    wdw := WinExist("ahk_exe ms-teams.exe")
+    wdw := WinExist("Chat |")
     if wdw {
         if WinActive(wdw)
             WinMinimize()
         else
             WinActivate()
     } else {
-        Suspend(true)
-        Send("!2")
-        Suspend(false)
-    }return
-}
-
-; fire up keepass
-!c::
-{
-    wdw := WinExist("ahk_exe KeePass.exe")
-    if wdw {
-        if WinActive(wdw)
-            WinMinimize()
-        else
-            WinActivate()
-    } else {
-        Suspend(true)
-        Send("!c")
-        Suspend(false)
+	wdw := WinExist("ahk_exe ms-teams.exe")
+	if wdw {
+		if WinActive(wdw)
+			WinMinimize()
+		else
+			WinActivate()
+	} else {
+		Suspend(true)
+		Send("!2")
+		Suspend(false)
+	}
     }
-	return
+  return
 }
 
-!\::
+; Fire up AI with Alt+3 shortcut
+; Try to target the specific 'SlipStreamAI' window first. Minimize if already active, otherwise activate it.
+; If not running, run the Python script.
+!3::
 {
-    if WinActive(zimtasks)
-        WinActivate(zim)
-    else
-        WinActivate(zimtasks)
-		return
+SetTitleMatchMode "2"
+    wdw := WinExist("SlipStreamAI")
+    if wdw {
+       if WinActive(wdw)
+          WinMinimize(wdw)
+       else
+       	WinActivate(wdw)
+    } else {
+        Run 'wsl cd /home/jgreenwood/code/ai-stuff && venv/bin/python ask-client/ask-client.py'
+    }
 }
 
 ; alt-r to do ctrl-5 (h5 heading in zim)
@@ -167,24 +204,6 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
 	return
 }
 
-+^`::
-{
-    if WinActive(zimtasks)
-        WinActivate(zim)
-    else
-        WinActivate(zimtasks)
-	return
-}
-
-; todoist window on ctrl-\
-^\::
-{
-    if WinActive(todoist)
-        WinMinimize(todoist)
-    else
-        WinActivate(todoist)
-	return
-}
 
 ; Change zim task to bullets
 ^F12::
@@ -195,3 +214,24 @@ mailappfat := "ahk_exe OUTLOOK.EXE"
 }
 
 
+; Define a variable to track the state of the mouse buttons
+leftRightClicked := false
+
+; Set a timer to check the state of the mouse buttons
+SetTimer CheckMouseButtons, 10
+
+CheckMouseButtons() {
+    global leftRightClicked
+    
+    ; Check if both the left and right mouse buttons are pressed
+    if (GetKeyState("LButton", "P") && GetKeyState("RButton", "P")) {
+        ; If not already clicked, simulate Windows Key + Tab
+        if (!leftRightClicked) {
+            Send("{LWin Down}{Tab Down}")
+            Send("{Tab Up}{LWin Up}")
+            leftRightClicked := true
+        }
+    } else {
+        leftRightClicked := false
+    }
+}

@@ -36,7 +36,17 @@ $`;:: {
 }
 
 ; CapsLock toggles between modes
-CapsLock:: {
+$CapsLock:: {
+     ; Get active window title
+    activeTitle := WinGetTitle("A")
+
+    ; If it's a ZimX window, do nothing
+    if InStr(activeTitle, "| ZimX") {
+	Send("{Blind}{CapsLock}")
+        return
+    }
+
+
     if (!modal) {
         vimize()
     } else {
